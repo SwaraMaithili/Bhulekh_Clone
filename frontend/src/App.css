@@ -1,0 +1,18 @@
+/* App.css */
+.search-container {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+select, input[type="text"], button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}

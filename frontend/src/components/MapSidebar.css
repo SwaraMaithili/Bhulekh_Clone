@@ -1,0 +1,26 @@
+.maharashtra-map {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  border: 1px solid #ced4da;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+}
+
+.district {
+  flex: 1 0 21%; /* 5 per row */
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.district:hover {
+  opacity: 0.85;
+  transform: scale(1.05);
+  transition: 0.2s;
+}

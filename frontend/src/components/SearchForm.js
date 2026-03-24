@@ -1,67 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../api'; // axios instance pointing to Django backend
+import React, { useState, useEffect } from "react";
 
 export default function SearchForm() {
+  const [data, setData] = useState({});
   const [districts, setDistricts] = useState([]);
   const [talukas, setTalukas] = useState([]);
   const [villages, setVillages] = useState([]);
 
-  const [district, setDistrict] = useState('');
-  const [taluka, setTaluka] = useState('');
-  const [village, setVillage] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedTaluka, setSelectedTaluka] = useState("");
+  const [selectedVillage, setSelectedVillage] = useState("");
 
-  // Load districts
+  // Load JSON on component mount
   useEffect(() => {
-    axios.get('/districts/').then(res => setDistricts(res.data));
+    fetch("/data/output.json")
+      .then((res) => res.json())
+      .then((json) => {
+        setData(json);
+        setDistricts(json.district_menu);
+      });
   }, []);
 
-  // Load talukas when district changes
+  // Update talukas when district changes
   useEffect(() => {
-    if (district) {
-      axios.get(`/talukas/${district}/`).then(res => setTalukas(res.data));
+    if (selectedDistrict) {
+      setTalukas(data.taluka_menu[selectedDistrict] || []);
     } else {
       setTalukas([]);
     }
-    setTaluka('');
+    setSelectedTaluka("");
     setVillages([]);
-    setVillage('');
-  }, [district]);
+    setSelectedVillage("");
+  }, [selectedDistrict, data]);
 
-  // Load villages when taluka changes
+  // Update villages when taluka changes
   useEffect(() => {
-    if (taluka) {
-      axios.get(`/villages/${taluka}/`).then(res => setVillages(res.data));
+    if (selectedTaluka) {
+      setVillages(data.village_menu[selectedTaluka] || []);
     } else {
       setVillages([]);
     }
-    setVillage('');
-  }, [taluka]);
+    setSelectedVillage("");
+  }, [selectedTaluka, data]);
 
   return (
-    <form>
-      <div>
-        <label>जिल्हा (District)</label>
-        <select value={district} onChange={e => setDistrict(e.target.value)}>
-          <option value="">--निवडा--</option>
-          {districts.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+    <div className="row">
+      <div className="col-md-4">
+        <label>District</label>
+        <select
+          className="form-control"
+          value={selectedDistrict}
+          onChange={(e) => setSelectedDistrict(e.target.value)}
+        >
+          <option value="">--Select District--</option>
+          {districts.map((d) => (
+            <option key={d.backend_value} value={d.backend_value}>
+              {d.display}
+            </option>
+          ))}
         </select>
       </div>
 
-      <div>
-        <label>तालुका (Taluka)</label>
-        <select value={taluka} onChange={e => setTaluka(e.target.value)}>
-          <option value="">--निवडा--</option>
-          {talukas.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+      <div className="col-md-4">
+        <label>Taluka</label>
+        <select
+          className="form-control"
+          value={selectedTaluka}
+          onChange={(e) => setSelectedTaluka(e.target.value)}
+        >
+          <option value="">--Select Taluka--</option>
+          {talukas.map((t) => (
+            <option key={t.backend_value} value={t.backend_value}>
+              {t.display}
+            </option>
+          ))}
         </select>
       </div>
 
-      <div>
-        <label>गाव (Village)</label>
-        <select value={village} onChange={e => setVillage(e.target.value)}>
-          <option value="">--निवडा--</option>
-          {villages.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+      <div className="col-md-4">
+        <label>Village</label>
+        <select
+          className="form-control"
+          value={selectedVillage}
+          onChange={(e) => setSelectedVillage(e.target.value)}
+        >
+          <option value="">--Select Village--</option>
+          {villages.map((v) => (
+            <option key={v.backend_value} value={v.backend_value}>
+              {v.display}
+            </option>
+          ))}
         </select>
       </div>
-    </form>
+    </div>
   );
 }

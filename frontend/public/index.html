@@ -1,53 +1,249 @@
-<!-- frontend/public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google" content="notranslate">
-    <title>Mahabhulekh v2.0</title>
+  <meta charset="UTF-8">
+  <title>7/12 Property Search</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
 
-    <!-- Add your CSS links here -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.1/css/font-awesome.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+    }
 
-    <!-- Add your JavaScript libraries -->
-    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="js/popper.min.js"></script>
+    h2, h3 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
 
-    <!-- Custom Styles -->
-    <style>
-        /* Add your custom CSS here */
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            padding: 30px;
-            border-radius: 8px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-        }
-    </style>
+    .img-map {
+      width: 100%;
+      max-width: 800px;
+      display: block;
+      margin: 0 auto 30px auto;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+      margin-right: 15px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .radio-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .radio-group label {
+      margin-right: 20px;
+      font-weight: normal;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .btn-submit {
+      background-color: #17a2b8;
+      color: #fff;
+    }
+
+    .btn-reset {
+      background-color: #6c757d;
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+      }
+      .form-group {
+        margin-right: 0;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<!-- Your HTML Content -->
-<div class="container">
-    <h2>Search Land Records</h2>
-    <!-- Form HTML goes here -->
-    <form>
-        <!-- Include your form fields here (District, Taluka, Survey Number, etc.) -->
-    </form>
-</div>
+  <div class="container">
+    <h2>7/12 Property Search</h2>
 
-<!-- Root Div for React -->
-<div id="root"></div>
+    <!-- Map -->
+    <img src="/images/maharashtra-map.jpg" alt="Maharashtra Map" class="img-map">
+
+    <!-- Do you know UID -->
+    <div class="radio-group">
+      <label><input type="radio" name="knowUID" value="yes"> होय (Yes)</label>
+      <label><input type="radio" name="knowUID" value="no" checked> नाही (No)</label>
+    </div>
+
+    <!-- Record type -->
+    <div class="radio-group">
+      <label><input type="radio" name="recordType" value="7/12" checked> ७/१२ (7/12)</label>
+      <label><input type="radio" name="recordType" value="8A"> ८अ (8A)</label>
+      <label><input type="radio" name="recordType" value="PC"> मालमत्ता पत्रक (Property Card)</label>
+      <label><input type="radio" name="recordType" value="KPrat"> क-प्रत (K-Prat)</label>
+    </div>
+
+    <!-- Dropdowns -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>District</label>
+        <select id="districtDropdown">
+          <option value="">--Select District--</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Taluka</label>
+        <select id="talukaDropdown">
+          <option value="">--Select Taluka--</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Village</label>
+        <select id="villageDropdown">
+          <option value="">--Select Village--</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Search type -->
+    <div class="radio-group">
+      <label><input type="radio" name="searchType" value="survey" checked> सर्वे नंबर / गट नंबर (Survey/Gat Number)</label>
+      <label><input type="radio" name="searchType" value="name"> नाव (Name)</label>
+    </div>
+
+    <!-- Survey Number and Mobile -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Survey Number (Part 1)</label>
+        <input type="text" id="surveyPart1" placeholder="">
+      </div>
+      <div class="form-group">
+        <label>Survey Number</label>
+        <select id="surveyNumberDropdown">
+          <option value="">--Select--</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Mobile</label>
+        <input type="text" id="mobileInput" placeholder="Enter मोबाइल क्रमांक">
+      </div>
+    </div>
+
+    <!-- Language and Captcha -->
+    <div class="form-row">
+      <div class="form-group">
+        <label>Select Language</label>
+        <select id="languageDropdown">
+          <option value="mr_in" selected>Marathi</option>
+          <option value="en_in">English</option>
+          <option value="hi_in">Hindi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Captcha</label>
+        <input type="text" id="captchaInput" placeholder="Enter Captcha">
+      </div>
+    </div>
+
+    <!-- Submit / Reset buttons -->
+    <div style="text-align:center; margin-top:20px;">
+      <button class="btn btn-submit">Submit</button>
+      <button class="btn btn-reset">Reset</button>
+    </div>
+  </div>
+
+  <!-- JS for dropdowns -->
+  <script>
+    let data = {};
+
+    fetch('/data/output.json')
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        populateDistricts();
+      })
+      .catch(err => console.error("Failed to load JSON:", err));
+
+    const districtDropdown = document.getElementById('districtDropdown');
+    const talukaDropdown = document.getElementById('talukaDropdown');
+    const villageDropdown = document.getElementById('villageDropdown');
+
+    function populateDistricts() {
+      if (!data.district_menu) return;
+      data.district_menu.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d.backend_value;
+        opt.text = d.display;
+        districtDropdown.appendChild(opt);
+      });
+    }
+
+    districtDropdown.addEventListener('change', function() {
+      talukaDropdown.innerHTML = '<option value="">--Select Taluka--</option>';
+      villageDropdown.innerHTML = '<option value="">--Select Village--</option>';
+      const talukas = data.taluka_menu[this.value] || [];
+      talukas.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.backend_value;
+        opt.text = t.display;
+        talukaDropdown.appendChild(opt);
+      });
+    });
+
+    talukaDropdown.addEventListener('change', function() {
+      villageDropdown.innerHTML = '<option value="">--Select Village--</option>';
+      const villages = data.village_menu[this.value] || [];
+      villages.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.backend_value;
+        opt.text = v.display;
+        villageDropdown.appendChild(opt);
+      });
+    });
+  </script>
 
 </body>
 </html>

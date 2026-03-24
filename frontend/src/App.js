@@ -1,12 +1,10 @@
-// frontend/src/App.js
-import React from 'react';
-import MapSidebar from './components/MapSidebar';
-import SearchForm from './components/SearchForm';
+import React from "react";
+import SearchForm from "./components/SearchForm";
 
 function App() {
   return (
-    <div className="App" style={{ display: 'flex' }}>
-      <MapSidebar />
+    <div className="container mt-4">
+      <h2>7/12 Property Details</h2>
       <SearchForm />
     </div>
   );
